@@ -1,0 +1,349 @@
+algoritmo FechaduraDigital;
+// Síntese
+//  Objetivo: Simular uma fechadura digital com gerenciamento de acessos
+//  Entrada :Ao cadastrar a senha: a senha e detalhes sobre quando aquela senha deve ser aceita. Quando for abrir a fechadura: Uma senha e o dia da semana em que a senha está sendo inserida, se for necessário. Caso a senha tenha sido esqueicda: a resposta à pergunta de seguramça.
+//  Saída   : Quando for abrir a fechadura: Senha válida ou inválida.Caso a senha tenha sido esquecida: a senha princiapl da fechadura.
+
+principal
+	// Declarações
+
+	inteiro i, j, totalsenhas, contportaaberta, cont, diavalid, numerodasenhatroca;
+	texto nomes[100], senhas[100] ,perguntaseg, respostaperguntaseg, contadorespecificodaparte2, senhadig, diadig, sounportaaberta, contadorgerenciarsenhas, senhadigadd, diadigadd, sounsenhaperma, diaparaconferir, resprespostaseg, nomedequemutilizara,senhadigtroca;
+	
+	texto dias[100];//SEG, TER, QUA, QUI, SEX, SAB, DOM, TODOS
+	
+
+
+
+	
+	// Instruções
+	contportaaberta = 0;
+	
+	
+	//Primeira parte, inicialização da fechadura
+	escreval("Digite o nome do usuário:");
+	leia(nomes[0]);
+	limpaTela();
+	escreval("Qual senha você deseja adicionar como senha principal? A senha principal sempre é permante.");
+	leia(senhas[0]);
+		dias[0] = "TODOS";
+	limpaTela();
+	escreval("Senha definida!");
+	escreval("Agora vamos definir uma pergunta de segurança e a sua resposta.");
+	escreval("Cuidado! Essa é a única maneira de recuperar a senha caso ela seja esquecida,");
+	escreval("Escolha uma frase que apenas você se lembre mas que não seja difícil de lembrar!"); 
+	
+	escreval("Digite a pergunta de segurança:");
+	leia(perguntaseg);
+	escreval("Muito bem! Agora, escreva a resposta dessa pergunta:");
+	leia(respostaperguntaseg);
+	limpaTela();
+	totalsenhas = 1;
+	limpaTela();
+	escreval("Senha principal e frase de segurança definida! O que deseja fazer agora, ", nomes[0], "?");
+
+	//Com a senha principal definida, a segunda parte do algorítimo começa. Nessa parte, o usuário pode abrir a fechadura, adicionar outra senha, ou recuperar a senha esquecida.
+	
+	faca
+	escreval("1.Abrir fechadura.");
+	escreval("2.Gerenciar senhas.");
+	escreval("3.Recuperar senha principal.");
+	escreval("4.Finalizar a fechadura");
+	escreval("Digite o número correspondente á ação desejada");
+	escreval("OBS:Qualquer outro valor inserido resultará na volta ao menu principal");
+	leia(contadorespecificodaparte2);
+	limpaTela();
+	//Caso o usuário queira abrir a fechadura
+
+	se(comparaTexto(contadorespecificodaparte2,"1") == 0)entao
+		escreval("Digite sua senha!");
+		leia(senhadig);
+		limpaTela();
+		contportaaberta = 0;
+			se(conferesenha(senhadig, totalsenhas, senhas) == 0)entao
+				escreval("Senha inválida!");
+			senao
+				se(confereperma (senhadig, totalsenhas, senhas, dias) == 1)entao
+					escreval("Olá, ", conferenome(senhadig, totalsenhas, nomes, senhas) ,"! Porta Aberta!");
+					contportaaberta = contportaaberta + 1;
+				senao
+					escreval("Qual o dia da semana?(Escreva as três primeiras letras do dia, maiúsculas.)");
+					leia(diadig);
+					limpaTela();
+					se(conferedia(senhadig, diadig, totalsenhas, senhas, dias) == 0)entao
+						escreval("Senha inválida!");
+					senao
+						escreval("Olá, ", conferenome(senhadig, totalsenhas, nomes, senhas) ,"! Porta Aberta!");
+						contportaaberta = contportaaberta + 1;
+					fimSe
+				fimSe	
+			fimSe
+	fimSe
+
+	//Caso o usuário queira gerenciar as senhas
+	
+	se(comparaTexto(contadorespecificodaparte2,"2") == 0)entao
+		escreval("O que você deseja fazer?");
+		escreval("1.Criar nova senha.");
+		escreval("2.Trocar senha.");
+		escreval("3.Número de senhas restantes");
+		escreval("Digite o número correspondente à ação desejada");
+		escreval("OBS:Qualquer outro valor inserido resultará na volta ao menu principal");
+		
+		leia(contadorgerenciarsenhas);
+		limpaTela();
+		se(comparaTexto(contadorgerenciarsenhas,"1") == 0)entao //Criar nova senha
+			se(totalsenhas < 100)entao
+				escreval("Ok! A nova senha será permanente?");
+				escreval("Digite SIM caso queira que a senha seja permanente e NÃO caso queira uma senha que funcione apenas em um dia da semana selecionado");
+				escreval("OBS: Caso outro texto seja digitado a senha será considerada como permanente, ou seja, abre em qualquer dia da semana.");
+				
+				leia(sounsenhaperma);
+				
+				limpaTela();
+				
+				escreval("Digite o nome da pessoa que utilizará essa senha:");
+				leia(nomes[totalsenhas]);
+				limpaTela();
+				escreval("Digite a senha que será adicionada:");
+				leia(senhadig);
+				limpaTela();
+				se(conferesenha(senhadig, totalsenhas, senhas) == 1)entao
+					escreval("Senha já utilizada!");
+				senao
+					senhas[totalsenhas] = senhadig;	
+					
+					se(comparaTexto(sounsenhaperma,"NÃO") == 0)entao
+						faca
+						diavalid = 0;
+						escreval("Digite o dia da semana que a senha será aceita:(Escreva as três primeiras letras do dia, maiúsculas.)");
+						leia(diaparaconferir);
+						limpaTela();
+							se(comparaTexto(diaparaconferir,"SEG")== 0 ou comparaTexto(diaparaconferir,"TER")== 0 ou comparaTexto(diaparaconferir,"QUA")== 0 ou comparaTexto(diaparaconferir,"QUI")== 0 ou comparaTexto(diaparaconferir,"SEX")== 0 ou comparaTexto(diaparaconferir,"SAB")== 0 ou comparaTexto(diaparaconferir,"DOM")== 0)entao
+								dias[totalsenhas] = diaparaconferir;
+								diavalid = diavalid + 1;
+							senao
+								escreval("Dia inválido, escreva uma data válida(SEG,TER,QUA,QUI,SEX,SAB,DOM");
+							fimSe
+						enquanto(diavalid == 0);
+					senao
+						dias[totalsenhas] = "TODOS";
+					fimSe
+					escreval("Senha adicionada com sucesso!");
+					totalsenhas = totalsenhas + 1;
+				fimSe	
+			senao
+			escreval("Número máximo de senhas atingido! Para adicionar uma senha nova acesse Trocar senha dentro do gerenciamento de senhas no menu principal.");
+			fimSe
+		fimSe
+		
+		se(comparaTexto(contadorgerenciarsenhas,"2") == 0)entao
+			escreval("Qual senha você deseja remover?");
+			leia(senhadig);
+			limpaTela();
+			se(conferetrocasenha(senhadig, totalsenhas, senhas) > 100)entao
+				escreval("Essa senha não existe");
+			senao
+				escreval("Ok! A nova senha será permanente?");
+				escreval("Digite SIM caso queira que a senha seja permanente e NÃO caso queira uma senha que funcione apenas em um dia da semana selecionado");
+				escreval("OBS: Caso outro texto seja digitado a senha será considerada como permanente, ou seja, abre em qualquer dia da semana.");
+				
+				leia(sounsenhaperma);
+				
+				limpaTela();
+				
+				escreval("Digite o nome da pessoa que utilizará a nova senha:");
+				leia(nomedequemutilizara);
+				
+				limpaTela();
+				
+				escreval("Digite a senha que será adicionada no lugar da anterior:");
+				leia(senhadigtroca);
+				limpaTela();
+				numerodasenhatroca = trocasenha(senhadig, totalsenhas, senhas);
+				
+				se(conferesenha(senhadigtroca, totalsenhas, senhas) == 1)entao
+					escreval("Senha já utilizada!");
+				senao	
+					senhas[numerodasenhatroca] = senhadigtroca;
+					nomes[numerodasenhatroca] = nomedequemutilizara;
+				fimSe
+					se(comparaTexto(sounsenhaperma,"NÃO") == 0)entao
+						faca
+						diavalid = 0;
+						escreval("Digite o dia da semana que a senha será aceita:(Escreva as três primeiras letras do dia, maiúsculas.)");
+						leia(diaparaconferir);
+						limpaTela();
+							se(comparaTexto(diaparaconferir,"SEG")== 0 ou comparaTexto(diaparaconferir,"TER")== 0 ou comparaTexto(diaparaconferir,"QUA")== 0 ou comparaTexto(diaparaconferir,"QUI")== 0 ou comparaTexto(diaparaconferir,"SEX")== 0 ou comparaTexto(diaparaconferir,"SAB")== 0 ou comparaTexto(diaparaconferir,"DOM")== 0)entao
+								dias[numerodasenhatroca] = diaparaconferir;
+								diavalid = diavalid + 1;
+							senao
+								escreval("Dia inválido, escreva uma data válida(SEG,TER,QUA,QUI,SEX,SAB,DOM");
+							fimSe
+						enquanto(diavalid == 0);
+					senao
+						dias[numerodasenhatroca] = "TODOS";
+					fimSe
+					escreval("Senha alterada com sucesso!");
+			fimSe
+		fimSe
+		
+		se(comparaTexto(contadorgerenciarsenhas,"3") == 0)entao
+			escreval(100 - totalsenhas, " senhas restantes.");
+		fimSe
+	fimSe
+
+	
+
+	//Caso o usuário queria recuperar a senha esquecida
+	
+	se(comparaTexto(contadorespecificodaparte2,"3") == 0)entao
+		escreval(perguntaseg);
+		leia(resprespostaseg);
+		limpaTela();
+		se(comparaTexto(resprespostaseg, respostaperguntaseg) == 0)entao
+			escreval("Resposta correta! A senha é: ", senhas[0]);
+		senao
+			escreval("Resposta inválida");
+		fimSe
+	fimSe
+	se(contportaaberta == 1)entao
+	contportaaberta = 0;
+		escreval("Se desejar fechar a porta e voltar ao menu principal, digite SIM, se desejar finalizar o programa, digite NÃO.(Caso outra resposta seja digitada, a fechadura voltará para o menu principal e a porta será fechada.)");
+		leia(sounportaaberta);
+		limpaTela();
+			se(comparaTexto(sounportaaberta,"NÃO")==0)entao
+				contadorespecificodaparte2 = "4";
+			fimSe
+	fimSe
+	enquanto(comparaTexto(contadorespecificodaparte2,"4") != 0);
+
+	escreval("Obrigado por usar a fechadura digital! Volte sempre!");
+fimPrincipal
+
+funcao inteiro conferesenha (texto senhadig, inteiro totalsenhas, texto senhas[])
+	// Declarações
+	
+	inteiro i, contconferesenha;
+	
+	
+	//Instruções
+
+	contconferesenha = 0;
+
+	para(i de 0 ate totalsenhas - 1 passo 1)faca
+		se(comparaTexto(senhadig,senhas[i]) == 0)entao
+			contconferesenha = contconferesenha + 1;
+		fimSe
+	fimPara
+
+	se(contconferesenha > 0) entao
+		retorna 1;
+	senao
+		retorna 0;
+	fimSe
+
+fimFuncao
+
+funcao inteiro confereperma (texto senhadig, inteiro totalsenhas, texto senhas[], texto dias[])
+	// Declarações
+	
+	inteiro i,j, contconferedia;
+	
+	//Instruções
+
+	para(i de 0 ate totalsenhas - 1 passo 1)faca
+		se(comparaTexto(senhadig,senhas[i]) == 0)entao
+			j = i;
+		fimSe
+	fimPara
+
+	se(comparaTexto(dias[j],"TODOS") == 0)entao
+		retorna 1;
+	senao
+		retorna 0;
+	fimSe
+
+fimFuncao
+
+funcao inteiro conferedia (texto senhadig,texto diadig, inteiro totalsenhas, texto senhas[], texto dias[])
+	// Declarações
+	
+	inteiro i,j, contconferedia;
+	
+	
+	//Instruções
+
+	para(i de 0 ate totalsenhas - 1 passo 1)faca
+		se(comparaTexto(senhadig,senhas[i]) == 0)entao
+			j = i;
+		fimSe
+	fimPara
+
+	se(comparaTexto(dias[j],diadig) == 0)entao
+		retorna 1;
+	senao
+		retorna 0;
+	fimSe
+
+fimFuncao
+
+funcao texto conferenome (texto senhadig, inteiro totalsenhas, texto nomes[], texto senhas[])
+	// Declarações
+	
+	inteiro i,j;
+	
+	
+	//Instruções
+	
+	para(i de 0 ate totalsenhas - 1 passo 1)faca
+		se(comparaTexto(senhadig,senhas[i]) == 0)entao
+			j = i;
+		fimSe
+	fimPara
+
+	retorna nomes[j];
+
+fimFuncao	
+
+funcao inteiro trocasenha (texto senhadig, inteiro totalsenhas, texto senhas[])
+	// Declarações
+	
+	inteiro i, j, contconferesenha;
+	
+	
+	//Instruções
+
+	
+
+	para(i de 0 ate totalsenhas - 1 passo 1)faca
+		se(comparaTexto(senhadig,senhas[i]) == 0)entao
+			j = i;
+		fimSe
+	fimPara
+
+	retorna j;
+
+fimFuncao
+
+funcao inteiro conferetrocasenha (texto senhadig, inteiro totalsenhas, texto senhas[])
+	// Declarações
+	
+	inteiro i, j, contconferesenha;
+	
+	
+	//Instruções
+
+	j = 101;
+
+	para(i de 0 ate totalsenhas - 1 passo 1)faca
+		se(comparaTexto(senhadig,senhas[i]) == 0)entao
+			j = i;
+		fimSe
+	fimPara
+
+	retorna j;
+
+fimFuncao
+
+
